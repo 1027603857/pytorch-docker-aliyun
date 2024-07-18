@@ -48,6 +48,12 @@ RUN /opt/conda/bin/conda install -c "${INSTALL_CHANNEL}" -c "${CUDA_CHANNEL}" -y
 FROM conda-installs as official
 LABEL com.nvidia.volumes.needed="nvidia_driver"
 
+# Config ssh
+RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && \
+    echo 'cd /workspace' >> /root/.bashrc && \
+    echo 'service ssh start' >> /root/.bashrc && \
+    echo 'export $(cat /proc/1/environ |tr "\\0" "\\n" | xargs)' >> /etc/profile
+
 # Optimize access speed in Chinese mainland
 RUN /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
@@ -56,12 +62,6 @@ RUN /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu
     /opt/conda/bin/conda config --set show_channel_urls yes && \
     /opt/conda/bin/conda update conda && \
     /opt/conda/bin/pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-# Config ssh
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && \
-    echo 'cd /workspace' >> /root/.bashrc && \
-    echo 'service ssh start' >> /root/.bashrc && \
-    echo 'export $(cat /proc/1/environ |tr "\\0" "\\n" | xargs)' >> /etc/profile
 
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
