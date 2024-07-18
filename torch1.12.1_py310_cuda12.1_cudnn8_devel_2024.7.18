@@ -26,16 +26,6 @@ RUN curl -fsSL -v -o ~/miniconda.sh -O "https://repo.anaconda.com/miniconda/Mini
 RUN chmod +x ~/miniconda.sh && \
     bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh
-
-# Optimize access speed in Chinese mainland
-RUN /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
-    /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
-    /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
-    /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ && \
-    /opt/conda/bin/conda config --set show_channel_urls yes && \
-    /opt/conda/bin/conda update conda && \
-    /opt/conda/bin/pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
 RUN /opt/conda/bin/conda install -y python=${PYTHON_VERSION}
 RUN /opt/conda/bin/conda install -y cmake conda-build pyyaml numpy ipython && \
     /opt/conda/bin/python -mpip install astunparse expecttest future numpy psutil pyyaml requests \
